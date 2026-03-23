@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>心动日常 · 四线恋爱物语</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: "Segoe UI", sans-serif;
+    background: linear-gradient(135deg,#ffdce8,#e4f0ff);
+    display: flex;
+    justify-content: center;
+}
+.container {
+    width: 100%;
+    max-width: 700px;
+    background: white;
+    border-radius: 20px;
+    margin: 20px;
+    padding: 20px;
+}
+.title {
+    text-align: center;
+    font-size: 26px;
+    margin-bottom: 10px;
+}
+.story {
+    min-height: 120px;
+    padding: 15px;
+    background: #fff5f8;
+    border-radius: 12px;
+    margin-bottom: 15px;
+}
+.choices button {
+    width: 100%;
+    margin: 6px 0;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    background: #ffe3ec;
+    cursor: pointer;
+}
+.choices button:hover {
+    background: #ffd2e0;
+}
+.bar {
+    height: 10px;
+    background: #eee;
+    margin: 5px 0;
+}
+.fill {
+    height: 100%;
+    background: pink;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+<div class="title">💗 心动日常</div>
+
+<div id="story" class="story"></div>
+
+<div id="choices" class="choices"></div>
+
+<div>
+    青梅哥哥：<div class="bar"><div id="a1" class="fill"></div></div>
+    问题同桌：<div class="bar"><div id="a2" class="fill"></div></div>
+    学生会长：<div class="bar"><div id="a3" class="fill"></div></div>
+    年下画家：<div class="bar"><div id="a4" class="fill"></div></div>
+</div>
+
+</div>
+
+<script>
+
+let affection = [0,0,0,0];
+let stage = 0;
+
+function updateBar(){
+    for(let i=0;i<4;i++){
+        document.getElementById("a"+(i+1)).style.width = affection[i]*2+"%";
+    }
+}
+
+function show(text, options){
+    document.getElementById("story").innerHTML = text;
+    let html="";
+    options.forEach((opt,i)=>{
+        html+=`<button onclick="choose(${i})">${opt.text}</button>`;
+    });
+    document.getElementById("choices").innerHTML = html;
+    window.currentOptions = options;
+}
+
+function choose(i){
+    let opt = currentOptions[i];
+    affection[opt.target]+=opt.aff;
+    stage = opt.next;
+    updateBar();
+    next();
+}
+
+function next(){
+
+// ===== 开场 =====
+if(stage===0){
+show("开学第一天，你的生活因为四个人悄悄发生变化……",[
+{text:"继续",target:0,aff:0,next:1}
+])
+}
+
+// ===== 青梅 =====
+else if(stage===1){
+show("邻居家的哥哥递给你早餐：「还是不吃早饭？」",[
+{text:"笑着接过",target:0,aff:+2,next:2},
+{text:"不好意思拒绝",target:0,aff:-1,next:2}
+])
+}
+
+// ===== 同桌 =====
+else if(stage===2){
+show("同桌敲你桌子：「喂，发什么呆？」",[
+{text:"回怼他",target:1,aff:+2,next:3},
+{text:"无视他",target:1,aff:-1,next:3}
+])
+}
+
+// ===== 学长 =====
+else if(stage===3){
+show("学生会长叫住你：「最近适应还好吗？」",[
+{text:"认真回答",target:2,aff:+2,next:4},
+{text:"随便敷衍",target:2,aff:-1,next:4}
+])
+}
+
+// ===== 年下 =====
+else if(stage===4){
+show("补习班少年递给你画：「这是你。」",[
+{text:"夸他画得好",target:3,aff:+3,next:5},
+{text:"有点害羞",target:3,aff:+1,next:5}
+])
+}
+
+// ===== 分水岭邀请 =====
+else if(stage===5){
+show("周末，四个人同时向你发来邀请……",[
+{text:"和青梅去看电影",target:0,aff:+3,next:10},
+{text:"和同桌去跳伞",target:1,aff:+3,next:20},
+{text:"和学长去游乐园",target:2,aff:+3,next:30},
+{text:"和年下去公园",target:3,aff:+3,next:40}
+])
+}
+
+// ===== 青梅线 =====
+else if(stage===10){
+show("他推着购物车：「想吃什么都可以。」",[
+{text:"靠近他",target:0,aff:+3,next:11},
+{text:"自己选零食",target:0,aff:+1,next:11}
+])
+}
+else if(stage===11){
+if(affection[0]>=8){
+show("电影结束，他轻声说：「一直这样在一起，好吗？」\n💗 HE",[])
+}else{
+show("你们并肩走着，关系温柔却模糊。",[])
+}
+}
+
+// ===== 同桌线 =====
+else if(stage===20){
+show("他笑：「怕了就抓紧我。」",[
+{text:"真的抓住他",target:1,aff:+4,next:21},
+{text:"嘴硬不怕",target:1,aff:+1,next:21}
+])
+}
+else if(stage===21){
+if(affection[1]>=8){
+show("落地后他轻声说：「其实我一直挺喜欢你的。」\n💗 HE",[])
+}else{
+show("他还是那样笑着逗你。",[])
+}
+}
+
+// ===== 学长线 =====
+else if(stage===30){
+show("他帮你挡住人群：「慢一点。」",[
+{text:"感谢他",target:2,aff:+3,next:31},
+{text:"装作没事",target:2,aff:+1,next:31}
+])
+}
+else if(stage===31){
+if(affection[2]>=8){
+show("摩天轮上他看着你：「我不是顺路，我是特地来找你的。」\n💗 HE",[])
+}else{
+show("你们之间仍保持着微妙距离。",[])
+}
+}
+
+// ===== 年下线 =====
+else if(stage===40){
+show("他偷偷看你：「你拍的我……很好看。」",[
+{text:"靠近看画",target:3,aff:+3,next:41},
+{text:"夸他",target:3,aff:+2,next:41}
+])
+}
+else if(stage===41){
+if(affection[3]>=8){
+show("他鼓起勇气：「我可以一直画你吗？」\n💗 HE",[])
+}else{
+show("你们的关系停留在暧昧边缘。",[])
+}
+}
+
+}
+
+next();
+
+</script>
+</body>
+</html>
