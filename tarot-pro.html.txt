@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>塔罗占卜Pro</title>
+
+<style>
+body {
+    margin:0;
+    font-family:sans-serif;
+    background: radial-gradient(circle,#1a1a2e,#000);
+    color:white;
+    text-align:center;
+}
+
+.container {
+    max-width:600px;
+    margin:30px auto;
+}
+
+h1 { color:#d4af37; }
+
+select, input {
+    width:90%;
+    padding:10px;
+    margin:10px;
+    border-radius:10px;
+    border:none;
+}
+
+button {
+    padding:12px 20px;
+    border:none;
+    border-radius:10px;
+    background:#d4af37;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.cards {
+    display:flex;
+    justify-content:center;
+    gap:15px;
+    margin-top:20px;
+    flex-wrap:wrap;
+}
+
+.card {
+    width:120px;
+    padding:10px;
+    border:2px solid #d4af37;
+    border-radius:10px;
+}
+
+.disclaimer {
+    position:fixed;
+    bottom:10px;
+    right:10px;
+    font-size:12px;
+    opacity:0.6;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<h1>🔮 塔罗占卜</h1>
+
+<select id="type">
+<option value="">请选择问题类型</option>
+<option value="love">💕 情感</option>
+<option value="career">💼 事业</option>
+<option value="money">💰 财运</option>
+<option value="study">📚 学业</option>
+<option value="general">🌟 综合</option>
+</select>
+
+<input id="question" placeholder="输入你的问题...">
+
+<br>
+<button onclick="start()">开始占卜</button>
+
+<div id="result"></div>
+</div>
+
+<div class="disclaimer">※ 本结果仅供娱乐参考</div>
+
+<script>
+
+const tarot = [
+{ name:"愚者", meaning:"新的开始，冒险与可能。" },
+{ name:"恋人", meaning:"关系与选择。" },
+{ name:"魔术师", meaning:"行动与掌控。" },
+{ name:"女祭司", meaning:"直觉与隐藏信息。" },
+{ name:"皇后", meaning:"成长与滋养。" },
+{ name:"皇帝", meaning:"掌控与规则。" },
+{ name:"战车", meaning:"前进与胜利。" },
+{ name:"力量", meaning:"内心的坚定。" },
+{ name:"命运之轮", meaning:"转机与变化。" },
+{ name:"星星", meaning:"希望与疗愈。" }
+];
+
+function draw(n){
+    let result=[];
+    for(let i=0;i<n;i++){
+        result.push(tarot[Math.floor(Math.random()*tarot.length)]);
+    }
+    return result;
+}
+
+function start(){
+    const type=document.getElementById("type").value;
+    const q=document.getElementById("question").value;
+
+    if(!type){ alert("请选择类型"); return; }
+    if(!q){ alert("请输入问题"); return; }
+
+    let cards=[];
+    let labels=[];
+
+    if(type==="love"){
+        cards=draw(3);
+        labels=["过去","现在","未来"];
+    }
+    if(type==="career"){
+        cards=draw(3);
+        labels=["现状","挑战","建议"];
+    }
+    if(type==="money"){
+        cards=draw(1);
+        labels=["结果"];
+    }
+    if(type==="study"){
+        cards=draw(2);
+        labels=["问题","解决"];
+    }
+    if(type==="general"){
+        cards=draw(3);
+        labels=["现状","趋势","结果"];
+    }
+
+    let html=`<h3>✨ 你的问题：${q}</h3><div class="cards">`;
+
+    cards.forEach((c,i)=>{
+        html+=`
+        <div class="card">
+            <h4>${labels[i]}</h4>
+            <strong>${c.name}</strong>
+            <p>${c.meaning}</p>
+        </div>`;
+    });
+
+    html+=`</div>`;
+
+    document.getElementById("result").innerHTML=html;
+}
+
+</script>
+
+</body>
+</html>
